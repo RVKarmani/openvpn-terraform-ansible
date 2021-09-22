@@ -1,0 +1,9 @@
+---
+openvpn_docker_image: "kylemanna/openvpn"
+openvpn_data_volume: "/home/ec2-user/vpn-data"
+openvpn_pki_pass: "test"
+openvpn_clients:
+  - rohit
+  - rohit2
+
+openvpn_key_dir: "~/profiles"

@@ -1,0 +1,173 @@
+---
+- name: Install pexpect python module for the expect task
+  pip: name=pexpect state=present
+
+- name: Ensure openvpn data volume exists
+  docker_volume: name={{openvpn_data_volume}} state=present
+
+- name: Check for openvpn config
+  command: docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm {{openvpn_docker_image}} ls /etc/openvpn/openvpn.conf
+  ignore_errors: yes
+  check_mode: no
+  changed_when: False
+  register: openvpn_config_check
+
+- name: Ensure openvpn config is generated
+  docker_container:
+    name: "tmp-openvpn-genconfig"
+    image: "{{openvpn_docker_image}}"
+    detach: no
+    cleanup: yes
+    volumes:
+      - "{{openvpn_data_volume}}:/etc/openvpn"
+    entrypoint: "ovpn_genconfig -u udp://{{public_ip}}:{{ovpn_port}}"
+  when: openvpn_config_check.rc == 1
+
+- name: Check for pki infrastructure
+  command: docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm {{openvpn_docker_image}} ls /etc/openvpn/pki
+  ignore_errors: yes
+  check_mode: no
+  changed_when: False
+  register: openvpn_pki_check
+  
+- name: "Generate PKI"
+  expect:
+    command: docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm -it {{openvpn_docker_image}} ovpn_initpki
+    timeout: 300 # 5 minutes (Generating DH Params takes time)
+    responses:
+      "pass phrase": "{{openvpn_pki_pass}}"
+      "Common Name": "{{public_ip}}:{{ovpn_port}}"
+  when: openvpn_pki_check.rc == 1
+
+- name: Ensure openvpn containers are started
+  tags: ['vpn-dnsfix']
+  docker_container:
+    name: "ovpn-{{item.proto}}"
+    image: "{{openvpn_docker_image}}"
+    pull: true
+    state: started
+    restart_policy: always
+    capabilities:
+      - NET_ADMIN
+    privileged: yes
+    ports:
+      - "{{item.port}}:1194/{{item.proto}}"
+    volumes:
+      - "{{openvpn_data_volume}}:/etc/openvpn"
+    command: ovpn_run --proto {{item.proto}}
+  with_items:
+    - { port: "{{ovpn_port}}", proto: udp }
+    - { port: 11443, proto: tcp }
+  register: "docker_vpn_container_status"
+
+# - name: Ensure OpenVPN traffic allowed through firewall
+#   tags: ['ufw']
+#   ufw:
+#     rule: allow
+#     port: '1194'
+#     proto: 'udp'
+
+# - name: Ensure OpenVPN (TLS) traffic allowed through firewall
+#   tags: ['ufw']
+#   ufw:
+#     rule: allow
+#     port: '443'
+#     proto: 'tcp'
+
+#   # Dear reader: If you can tell me why this is necessary,
+#   # I will buy you a beer. Without this step, DNS queries from
+#   # VPN clients reach the DNS container, but the replies get
+#   # blocked somewhere.
+#   # Also, some clients seem to insist on using 8.8.8.8 even though
+#   # the config has 'push "dhcp-option DNS [my DNS server]".
+# - name: "Ensure all DNS queries from container go to internal dns"
+#   tags: ['vpn-dnsfix']
+#   iptables:
+#     action: insert
+#     table: nat
+#     chain: PREROUTING
+#     source: "{{item.ansible_facts.docker_container.NetworkSettings.IPAddress}}"
+#     destination_port: "53"
+#     protocol: "{{item.item.proto}}"
+#     jump: "DNAT"
+#     to_destination: "{{docker_dns_container_status.ansible_facts.docker_container.NetworkSettings.IPAddress}}:53"
+#   with_items: "{{docker_vpn_container_status.results}}"
+  
+- name: Get current client list
+  command: docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm {{openvpn_docker_image}} ovpn_listclients
+  check_mode: no
+  register: openvpn_client_list
+  changed_when: false
+
+- name: Ensure client keys are generated
+  expect:
+    command: "docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm -it {{openvpn_docker_image}} easyrsa build-client-full {{item}} nopass"
+    responses:
+      "pass phrase": "{{openvpn_pki_pass}}"
+  when: "openvpn_client_list.stdout.find(item) == -1"
+  with_items: "{{openvpn_clients}}"
+
+- name: Save generated keys
+  shell: docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm {{openvpn_docker_image}} ovpn_getclient {{item}} > {{openvpn_key_dir}}/{{item}}.ovpn
+  args:
+    creates: "{{openvpn_key_dir}}/{{item}}.ovpn"
+  with_items: "{{openvpn_clients}}"
+  become: yes
+  become_user: "{{user}}"
+  when: "openvpn_key_dir is defined"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- name: Creating OpenVPN User
+  docker_container:
+    name: myownvpn
+    image: "{{openvpn_docker_image}}"
+    state: started
+    command: "easyrsa build-client-full rohit_user nopass"
+    recreate: yes
+    # auto_remove: yes
+    volumes:
+      - /home/ec2-user/vpn-data:/etc/openvpn
+
+    detach: yes
+
+# - name: Generating OpenVPN Config file
+#   docker_container:
+#     name: myownvpn
+#     image: "{{openvpn_docker_image}}"
+#     state: started
+#     command: "ovpn_getclient rohit_user > rohit_user.ovpn"
+#     recreate: yes
+#     # auto_remove: yes
+#     volumes:
+#       - /home/ec2-user/vpn-data:/etc/openvpn
+
+#     detach: yes
+
+# - name: Running VPN Server
+#   docker_container:
+#     name: myownvpn
+#     image: "{{openvpn_docker_image}}"
+#     capabilities: NET_ADMIN
+#     recreate: yes
+#     keep_volumes: yes
+#     ports: 
+#       - "{{ ovpn_port }}:1194/udp"
+#     volumes:
+#       - /home/ec2-user/vpn-data:/etc/openvpn
+
+#     detach: yes

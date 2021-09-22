@@ -4,3 +4,4 @@
   # strategy: debug
   roles:
     - { role: aws-docker, tags: [ 'aws-docker' ] }
+    - { role: openvpn-setup, tags: ['openvpn-setup'] }
