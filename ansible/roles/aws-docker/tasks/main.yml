@@ -36,7 +36,7 @@
     name: myownvpn
     image: kylemanna/openvpn
     state: started
-    command: "ovpn_initpki"
+    command: "ovpn_initpki nopass"
     interactive: yes
     recreate: yes
     # auto_remove: yes
