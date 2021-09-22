@@ -1,7 +1,7 @@
 {
   "AWS_REGION": "ap-south-1",
   "INSTANCE_TYPE": "t2.micro",
-  "EC2_AMI": "ami-0c1a7f89451184c8b",
+  "EC2_AMI": "ami-0a23ccb2cdd9286bb",
   "OPEN_VPN_PORT": "1194",
   "OPEN_VPN_SG": "openvpn-sg",
   "VPN_SSH_PUBLIC_KEY": "~/.ssh/openvpn-key.pub",
