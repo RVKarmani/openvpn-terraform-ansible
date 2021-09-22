@@ -39,24 +39,24 @@
     command: "ovpn_initpki"
     interactive: yes
     recreate: yes
-    # auto_remove: yes
+    auto_remove: yes
     volumes:
       - /home/ec2-user/vpn-data:/etc/openvpn
 
     detach: yes
 
-# - name: Creating OpenVPN User
-#   docker_container:
-#     name: myownvpn
-#     image: kylemanna/openvpn
-#     state: started
-#     command: "easyrsa build-client-full rohit_user nopass"
-#     recreate: yes
-#     auto_remove: yes
-#     volumes:
-#       - /home/ec2-user/vpn-data:/etc/openvpn
+- name: Creating OpenVPN User
+  docker_container:
+    name: myownvpn
+    image: kylemanna/openvpn
+    state: started
+    command: "easyrsa build-client-full rohit_user nopass"
+    recreate: yes
+    # auto_remove: yes
+    volumes:
+      - /home/ec2-user/vpn-data:/etc/openvpn
 
-#     detach: yes
+    detach: yes
 
 # - name: Generating OpenVPN Config file
 #   docker_container:
