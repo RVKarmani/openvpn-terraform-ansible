@@ -1,0 +1,29 @@
+---
+- name: Configure / Update yum packages
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: install docker
+  yum:
+    name='docker'
+    state=latest
+
+- name: service docker
+  service:
+    name=docker
+    state=started
+    enabled=yes
+
+- name: OpenVPN config
+  docker_container:
+    name: myownvpn
+    image: kylemanna/openvpn
+    state: started
+    recreate: yes
+    user: 
+    ports: 
+      - "{{ ovpn_port }}":1194
+    volumes:
+      - $PWD/vpn-data:/etc/openvpn
