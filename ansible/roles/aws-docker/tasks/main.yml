@@ -32,3 +32,18 @@
       - /home/ec2-user/vpn-data:/etc/openvpn
 
     detach: yes
+
+- name: Initializing PKI
+  docker_container:
+    name: myownvpn
+    image: kylemanna/openvpn
+    state: started
+    command: "ovpn_initpki"
+    recreate: yes
+    auto_remove: true
+    ports: 
+      - "{{ ovpn_port }}:1194"
+    volumes:
+      - /home/ec2-user/vpn-data:/etc/openvpn
+
+    detach: yes
