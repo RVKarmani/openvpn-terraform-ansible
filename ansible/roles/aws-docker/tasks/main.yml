@@ -24,6 +24,6 @@
     recreate: yes
     user: 
     ports: 
-      - "{{ ovpn_port }}":1194
+      - ''"{{ ovpn_port }}":1194'
     volumes:
       - $PWD/vpn-data:/etc/openvpn
