@@ -17,7 +17,7 @@
     
 - name: install docker SDK
   command: "pip3 install docker"
-  
+
 - name: OpenVPN config
   docker_container:
     name: myownvpn
@@ -29,6 +29,6 @@
     ports: 
       - "{{ ovpn_port }}:1194"
     volumes:
-      - $PWD/vpn-data:/etc/openvpn
+      - /home/ec2-user/vpn-data:/etc/openvpn
 
     detach: yes
