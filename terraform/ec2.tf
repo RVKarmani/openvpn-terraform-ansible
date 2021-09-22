@@ -56,7 +56,7 @@ resource "aws_instance" "openvpn_instance" {
     ami = var.EC2_AMI
     key_name = aws_key_pair.openvpn_auth.id
     instance_type = var.INSTANCE_TYPE
-    security_groups = [aws_security_group.openvpn_sg.id]
+    vpc_security_group_ids = [aws_security_group.openvpn_sg.id]
     associate_public_ip_address = true
     tags = {
         Name = "openvpn_instance"
@@ -77,5 +77,5 @@ public_ip=${aws_instance.openvpn_instance.public_ip}
 ovpn_port=${var.OPEN_VPN_PORT}
 EOF
 
-  filename = "${path.module}/../ansible/hosts"
+  filename = "${path.module}/../ansible/inventory"
 }
