@@ -74,10 +74,9 @@
   docker_container:
     name: myownvpn
     image: kylemanna/openvpn
-    state: started
     capabilities: NET_ADMIN
     recreate: yes
-    auto_remove: yes
+    keep_volumes: yes
     ports: 
       - "{{ ovpn_port }}:1194/udp"
     volumes:
