@@ -25,7 +25,7 @@
     state: started
     command: "ovpn_genconfig -u udp://{{ public_ip }}:{{ ovpn_port }}"
     recreate: yes
-    auto_remove: true
+    auto_remove: yes
     volumes:
       - /home/ec2-user/vpn-data:/etc/openvpn
 
@@ -38,7 +38,7 @@
     state: started
     command: "ovpn_initpki"
     recreate: yes
-    auto_remove: true
+    auto_remove: yes
     volumes:
       - /home/ec2-user/vpn-data:/etc/openvpn
 
@@ -51,7 +51,7 @@
     state: started
     capabilities: NET_ADMIN
     recreate: yes
-    auto_remove: true
+    auto_remove: yes
     ports: 
       - "{{ ovpn_port }}:1194/udp"
     volumes:
@@ -66,7 +66,7 @@
     state: started
     command: "easyrsa build-client-full rohit_user nopass"
     recreate: yes
-    auto_remove: true
+    auto_remove: yes
     volumes:
       - /home/ec2-user/vpn-data:/etc/openvpn
 
@@ -79,7 +79,7 @@
     state: started
     command: "ovpn_getclient rohit_user > rohit_user.ovpn"
     recreate: yes
-    auto_remove: true
+    auto_remove: yes
     volumes:
       - /home/ec2-user/vpn-data:/etc/openvpn
 
