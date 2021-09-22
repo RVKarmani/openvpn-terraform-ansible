@@ -37,6 +37,7 @@
     image: kylemanna/openvpn
     state: started
     command: "ovpn_initpki"
+    interactive: yes
     recreate: yes
     auto_remove: yes
     volumes:
