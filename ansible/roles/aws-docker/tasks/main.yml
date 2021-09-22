@@ -25,7 +25,7 @@
     state: started
     command: ovpn_genconfig
     recreate: yes
-    user: udp://"{{ public_ip }}":"{{ ovpn_port }}"
+    user: "udp://{{ public_ip }}:{{ ovpn_port }}"
     auto_remove: true
     ports: 
       - "{{ ovpn_port }}:1194"
