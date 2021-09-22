@@ -69,7 +69,7 @@ resource "local_file" "ansible_inventory" {
 [openvpn_instance]
 ${aws_instance.openvpn_instance.public_ip}
 
-[openvpn_public:vars]
+[openvpn_instance:vars]
 aws_region=${data.aws_region.current.name}
 ansible_ssh_private_key_file=${var.VPN_SSH_PRIVATE_KEY}
 ansible_python_interpreter=/usr/bin/python3
