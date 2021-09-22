@@ -23,7 +23,7 @@
     state: started
     recreate: yes
     user: udp://"{{ public_ip }}":"{{ ovpn_port }}"
-    auto
+    auto_remove: true
     ports: 
       - "{{ ovpn_port }}:1194"
     volumes:
