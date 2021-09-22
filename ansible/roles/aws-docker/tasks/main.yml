@@ -25,25 +25,25 @@
     state: started
     command: "ovpn_genconfig -u udp://{{ public_ip }}:{{ ovpn_port }}"
     recreate: yes
-    # auto_remove: yes
+    auto_remove: yes
     volumes:
       - /home/ec2-user/vpn-data:/etc/openvpn
 
     detach: yes
 
-# - name: Initializing PKI
-#   docker_container:
-#     name: myownvpn
-#     image: kylemanna/openvpn
-#     state: started
-#     command: "ovpn_initpki"
-#     interactive: yes
-#     recreate: yes
-#     auto_remove: yes
-#     volumes:
-#       - /home/ec2-user/vpn-data:/etc/openvpn
+- name: Initializing PKI
+  docker_container:
+    name: myownvpn
+    image: kylemanna/openvpn
+    state: started
+    command: "ovpn_initpki"
+    interactive: yes
+    recreate: yes
+    # auto_remove: yes
+    volumes:
+      - /home/ec2-user/vpn-data:/etc/openvpn
 
-#     detach: yes
+    detach: yes
 
 # - name: Creating OpenVPN User
 #   docker_container:
