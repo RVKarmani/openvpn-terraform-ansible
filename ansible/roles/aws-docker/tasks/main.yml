@@ -5,16 +5,19 @@
     state: latest
     update_cache: yes
 
-- name: Install docker
-  package:
-    name: docker-ce
-    state: present
+- name: install docker
+  yum:
+    name: docker
+    state: latest
 
-- name: Start docker service
+- name: service docker
   service:
     name: docker
     state: started
-
+    
+- name: install docker SDK
+  command: "pip3 install docker"
+  
 - name: OpenVPN config
   docker_container:
     name: myownvpn
@@ -27,3 +30,5 @@
       - "{{ ovpn_port }}:1194"
     volumes:
       - $PWD/vpn-data:/etc/openvpn
+
+    detach: yes
