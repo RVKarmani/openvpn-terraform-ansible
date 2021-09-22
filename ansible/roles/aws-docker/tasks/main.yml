@@ -22,8 +22,9 @@
     image: kylemanna/openvpn
     state: started
     recreate: yes
-    user: 
+    user: udp://"{{ public_ip }}":"{{ ovpn_port }}"
+    auto
     ports: 
-      - "1194:1194"
+      - "{{ ovpn_port }}:1194"
     volumes:
       - $PWD/vpn-data:/etc/openvpn
