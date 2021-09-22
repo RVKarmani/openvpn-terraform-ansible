@@ -5,16 +5,15 @@
     state: latest
     update_cache: yes
 
-- name: install docker
-  yum:
-    name='docker'
-    state=latest
+- name: Install docker
+  package:
+    name: docker-ce
+    state: present
 
-- name: service docker
+- name: Start docker service
   service:
-    name=docker
-    state=started
-    enabled=yes
+    name: docker
+    state: started
 
 - name: OpenVPN config
   docker_container:
