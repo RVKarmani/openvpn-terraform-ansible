@@ -23,6 +23,7 @@
     name: myownvpn
     image: kylemanna/openvpn
     state: started
+    command: ovpn_genconfig
     recreate: yes
     user: udp://"{{ public_ip }}":"{{ ovpn_port }}"
     auto_remove: true
