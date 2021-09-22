@@ -52,24 +52,24 @@
     state: started
     command: "easyrsa build-client-full rohit_user nopass"
     recreate: yes
-    auto_remove: yes
-    volumes:
-      - /home/ec2-user/vpn-data:/etc/openvpn
-
-    detach: yes
-
-- name: Generating OpenVPN Config file
-  docker_container:
-    name: myownvpn
-    image: kylemanna/openvpn
-    state: started
-    command: "ovpn_getclient rohit_user > rohit_user.ovpn"
-    recreate: yes
     # auto_remove: yes
     volumes:
       - /home/ec2-user/vpn-data:/etc/openvpn
 
     detach: yes
+
+# - name: Generating OpenVPN Config file
+#   docker_container:
+#     name: myownvpn
+#     image: kylemanna/openvpn
+#     state: started
+#     command: "ovpn_getclient rohit_user > rohit_user.ovpn"
+#     recreate: yes
+#     # auto_remove: yes
+#     volumes:
+#       - /home/ec2-user/vpn-data:/etc/openvpn
+
+#     detach: yes
 
 # - name: Running VPN Server
 #   docker_container:
