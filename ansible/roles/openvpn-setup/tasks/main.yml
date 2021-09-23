@@ -110,7 +110,7 @@
     state: directory
     mode: 0775
     recurse: yes
-    
+
 - name: Save generated keys
   shell: docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm {{openvpn_docker_image}} ovpn_getclient {{item}} > {{openvpn_key_dir}}/{{item}}.ovpn
   args:
@@ -118,59 +118,3 @@
   with_items: "{{openvpn_clients}}"
   become: yes
   when: "openvpn_key_dir is defined"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-- name: Creating OpenVPN User
-  docker_container:
-    name: myownvpn
-    image: "{{openvpn_docker_image}}"
-    state: started
-    command: "easyrsa build-client-full rohit_user nopass"
-    recreate: yes
-    # auto_remove: yes
-    volumes:
-      - /home/ec2-user/vpn-data:/etc/openvpn
-
-    detach: yes
-
-# - name: Generating OpenVPN Config file
-#   docker_container:
-#     name: myownvpn
-#     image: "{{openvpn_docker_image}}"
-#     state: started
-#     command: "ovpn_getclient rohit_user > rohit_user.ovpn"
-#     recreate: yes
-#     # auto_remove: yes
-#     volumes:
-#       - /home/ec2-user/vpn-data:/etc/openvpn
-
-#     detach: yes
-
-# - name: Running VPN Server
-#   docker_container:
-#     name: myownvpn
-#     image: "{{openvpn_docker_image}}"
-#     capabilities: NET_ADMIN
-#     recreate: yes
-#     keep_volumes: yes
-#     ports: 
-#       - "{{ ovpn_port }}:1194/udp"
-#     volumes:
-#       - /home/ec2-user/vpn-data:/etc/openvpn
-
-#     detach: yes
