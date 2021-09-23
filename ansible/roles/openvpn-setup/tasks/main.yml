@@ -104,6 +104,13 @@
   when: "openvpn_client_list.stdout.find(item) == -1"
   with_items: "{{openvpn_clients}}"
 
+- name: Creates directory
+  file:
+    path: "{{openvpn_key_dir}}"
+    state: directory
+    mode: 0775
+    recurse: yes
+    
 - name: Save generated keys
   shell: docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm {{openvpn_docker_image}} ovpn_getclient {{item}} > {{openvpn_key_dir}}/{{item}}.ovpn
   args:

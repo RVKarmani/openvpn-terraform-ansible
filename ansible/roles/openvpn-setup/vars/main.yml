@@ -7,4 +7,4 @@ openvpn_clients:
   - rohit
   - rohit2
 
-openvpn_key_dir: "~/profiles"
+openvpn_key_dir: "/home/ec2-user/profiles"
