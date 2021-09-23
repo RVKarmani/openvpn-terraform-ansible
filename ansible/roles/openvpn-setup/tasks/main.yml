@@ -35,12 +35,8 @@
     command: docker run -v {{openvpn_data_volume}}:/etc/openvpn --rm -it {{openvpn_docker_image}} ovpn_initpki nopass
     timeout: 300 # 5 minutes (Generating DH Params takes time)
     responses:
-      "Confirm removal:": yes
-      # "Enter New CA Key Passphrase:": "{{openvpn_pki_pass}}"
-      # "Re-Enter New CA Key Passphrase:": "{{openvpn_pki_pass}}"
-      "Common Name (eg: your user, host, or server name) [Easy-RSA CA]:": "{{public_ip}}:{{ovpn_port}}"
-      # "Enter pass phrase for /etc/openvpn/pki/private/ca.key:": "{{openvpn_pki_pass}}"
-      # "Enter pass phrase for /etc/openvpn/pki/private/ca.key:": "{{openvpn_pki_pass}}"
+      "Confirm removal": "{{removal_response}}"
+      "Common Name": "{{public_ip}}:{{ovpn_port}}"
   when: openvpn_pki_check.rc == 1
 
 - name: Ensure openvpn containers are started

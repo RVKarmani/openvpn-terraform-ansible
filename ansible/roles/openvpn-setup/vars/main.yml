@@ -2,6 +2,7 @@
 openvpn_docker_image: "kylemanna/openvpn"
 openvpn_data_volume: "ovpn-data"
 openvpn_pki_pass: "abcde"
+removal_response: "yes"
 openvpn_clients:
   - rohit
   - rohit2
