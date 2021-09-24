@@ -60,6 +60,7 @@ resource "aws_key_pair" "openvpn_auth" {
   provisioner "local-exec" {
     command = "chmod 400 ~/.ssh/'${var.OPEN_VPN_KEY_NAME}'.pem"
   }
+}
 
 
 # resource "aws_key_pair" "openvpn_auth" {
