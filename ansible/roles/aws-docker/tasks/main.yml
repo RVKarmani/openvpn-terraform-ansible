@@ -19,7 +19,7 @@
   command: "pip3 install docker"
 
 - name: Print ansible_user
-  debug: "msg=Ansible user: '{{ ansible_user.stdout }}'" 
+  debug: "msg=Ansible user: '{{ ansible_user }}'" 
 
 - name: Add user to docker group
   command: "sudo usermod -aG docker {{ansible_user}}"
