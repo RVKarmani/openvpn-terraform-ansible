@@ -4,6 +4,5 @@
   "EC2_AMI": "ami-0a23ccb2cdd9286bb",
   "OPEN_VPN_PORT": "3000",
   "OPEN_VPN_SG": "openvpn-sg",
-  "VPN_SSH_PUBLIC_KEY": "~/.ssh/openvpn-key.pub",
-  "VPN_SSH_PRIVATE_KEY": "~/.ssh/openvpn-key"
+  "OPEN_VPN_KEY_NAME": "ovpn-key"
 }

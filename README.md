@@ -21,6 +21,5 @@ terraform apply --var-file ../vars.json
 ## Setup VPN
 ```
 cd ansible
- ansible-playbook --private-key=~/.ssh/openvpn-key --become --user=ec2-user --inventory-file
-=inventory openvpn_setup_playbook.yml
+ ansible-playbook --private-key=~/.ssh/openvpn-key --become --user=ec2-user -i inventory openvpn_setup_playbook.yml
 ```

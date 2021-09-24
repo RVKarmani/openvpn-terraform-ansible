@@ -1,9 +1,8 @@
 variable "OPEN_VPN_PORT" {}
 variable "EC2_AMI" {}
 variable "INSTANCE_TYPE" {}
-variable "VPN_SSH_PUBLIC_KEY" {}
-variable "VPN_SSH_PRIVATE_KEY" {}
 variable "OPEN_VPN_SG" {}
+variable "OPEN_VPN_KEY_NAME" {}
 
 # DEFAULT VPC
 data "aws_vpc" "default" {
@@ -45,11 +44,28 @@ resource "aws_security_group" "openvpn_sg" {
 }
 
 # Key pair
+resource "tls_private_key" "pk" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
 resource "aws_key_pair" "openvpn_auth" {
-  key_name   = "openvpn-key"
-  public_key = file(var.VPN_SSH_PUBLIC_KEY)
-}
+  key_name   = var.OPEN_VPN_KEY_NAME       # Create "OPEN_VPN_KEY_NAME" to AWS!!
+  public_key = tls_private_key.pk.public_key_openssh
+
+  provisioner "local-exec" { # Create "OPEN_VPN_KEY_NAME.pem" to your computer!!
+    command = "echo '${tls_private_key.pk.private_key_pem}' > ~/.ssh/'${var.OPEN_VPN_KEY_NAME}'.pem"
+  }
+
+  provisioner "local-exec" {
+    command = "chmod 400 ~/.ssh/'${var.OPEN_VPN_KEY_NAME}'.pem"
+  }
+
+
+# resource "aws_key_pair" "openvpn_auth" {
+#   key_name   = "openvpn-key"
+#   public_key = file(var.VPN_SSH_PUBLIC_KEY)
+# }
 
 # EC2 instance
 resource "aws_instance" "openvpn_instance" {
@@ -71,7 +87,8 @@ ${aws_instance.openvpn_instance.public_ip}
 
 [openvpn_instance:vars]
 aws_region=${data.aws_region.current.name}
-ansible_ssh_private_key_file=${var.VPN_SSH_PRIVATE_KEY}
+ansible_user=ec2-user
+ansible_ssh_private_key_file=${var.OPEN_VPN_KEY_NAME}.pem
 ansible_python_interpreter=/usr/bin/python3
 public_ip=${aws_instance.openvpn_instance.public_ip}
 ovpn_port=${var.OPEN_VPN_PORT}
