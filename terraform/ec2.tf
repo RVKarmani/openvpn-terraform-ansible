@@ -3,6 +3,7 @@ variable "EC2_AMI" {}
 variable "INSTANCE_TYPE" {}
 variable "OPEN_VPN_SG" {}
 variable "OPEN_VPN_KEY_NAME" {}
+variable "REMOTE_USER" {}
 
 # DEFAULT VPC
 data "aws_vpc" "default" {
@@ -89,6 +90,7 @@ ${aws_instance.openvpn_instance.public_ip}
 [openvpn_instance:vars]
 aws_region=${data.aws_region.current.name}
 ansible_ssh_private_key_file=~/.ssh/${var.OPEN_VPN_KEY_NAME}.pem
+ansible_user=${var.REMOTE_USER}
 ansible_python_interpreter=/usr/bin/python3
 public_ip=${aws_instance.openvpn_instance.public_ip}
 ovpn_port=${var.OPEN_VPN_PORT}
