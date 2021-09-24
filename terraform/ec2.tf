@@ -88,7 +88,6 @@ ${aws_instance.openvpn_instance.public_ip}
 
 [openvpn_instance:vars]
 aws_region=${data.aws_region.current.name}
-ansible_user=ec2-user
 ansible_ssh_private_key_file=~/.ssh/${var.OPEN_VPN_KEY_NAME}.pem
 ansible_python_interpreter=/usr/bin/python3
 public_ip=${aws_instance.openvpn_instance.public_ip}

@@ -1,4 +1,4 @@
-# CLOUD APPLICATION SETUP USING TERRAFORM AND ANSIBLE
+# OpenVPN Setup using Terraform and Ansible
 
 ## Setup
 1. Create an IAM role for Terraform and Ansible instance to access the 2nd EC2 instance with server setup - EC2FullAccess
@@ -28,5 +28,9 @@ terraform taint aws_instance.openvpn_instance
 ## Setup VPN
 ```
 cd ansible
- ansible-playbook -i inventory openvpn_setup_playbook.yml
+ansible-playbook -i inventory --become --user=ec2-user openvpn_setup_playbook.yml
 ```
+
+## Profiles
+After running ansible-playbook the vpn profile files will be available in **profiles** folder in root directory of host
+The profiles can then be imported into VPN client like [OpenVPN GUI](https://openvpn.net/community-downloads/)
