@@ -28,5 +28,5 @@ terraform taint aws_instance.openvpn_instance
 ## Setup VPN
 ```
 cd ansible
- ansible-playbook --private-key=~/.ssh/openvpn-key --become --user=ec2-user -i inventory openvpn_setup_playbook.yml
+ ansible-playbook -i inventory openvpn_setup_playbook.yml
 ```

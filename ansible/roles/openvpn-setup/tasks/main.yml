@@ -120,4 +120,4 @@
   when: "openvpn_key_dir is defined"
 
 - name: Fetch profiles from openvpn_instance and save to local
-  synchronize:  src="{{openvpn_key_dir}}" dest="{{openvpn_key_dir}}" mode=pull
+  synchronize:  src="{{openvpn_key_dir}}" dest="{{root_dir}}" mode=pull
